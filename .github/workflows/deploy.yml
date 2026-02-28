@@ -1,0 +1,29 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  loki:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./loki/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: docker.mattglei.ch
+          username: admin
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker build -t docker.mattglei.ch/lab/loki.
+          docker push docker.mattglei.ch/lab/loki
+      - uses: caprover/deploy-from-github@v1.1.2
+        with:
+          server: https://lab.mattglei.ch
+          app: loki
+          token: '${{ secrets.CAPROVER_APP_TOKEN }}'
+          image: docker.mattglei.ch/lab/loki
