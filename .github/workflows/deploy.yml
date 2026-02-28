@@ -19,7 +19,7 @@ jobs:
           username: admin
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker build -t docker.mattglei.ch/lab/loki.
+          docker build -t docker.mattglei.ch/lab/loki .
           docker push docker.mattglei.ch/lab/loki
       - uses: caprover/deploy-from-github@v1.1.2
         with:
