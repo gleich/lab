@@ -25,5 +25,5 @@ jobs:
         with:
           server: https://lab.mattglei.ch
           app: loki
-          token: '${{ secrets.CAPROVER_APP_TOKEN }}'
+          token: '${{ secrets.CAPROVER_LOKI_APP_TOKEN }}'
           image: docker.mattglei.ch/lab/loki
