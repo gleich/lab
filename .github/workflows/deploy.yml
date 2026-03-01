@@ -6,11 +6,15 @@ on:
       - main
 
 jobs:
-  loki:
+  caprover:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./loki/
+    strategy:
+      fail-fast: true
+      matrix:
+        image: [loki, alloy]
     steps:
       - uses: actions/checkout@v4
       - uses: docker/login-action@v3
@@ -19,11 +23,11 @@ jobs:
           username: admin
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker build -t docker.mattglei.ch/lab/loki .
-          docker push docker.mattglei.ch/lab/loki
+          docker build -t docker.mattglei.ch/lab/${{ matrix.image }} .
+          docker push docker.mattglei.ch/lab/${{ matrix.image }}
       - uses: caprover/deploy-from-github@v1.1.2
         with:
           server: https://lab.mattglei.ch
-          app: loki
-          token: '${{ secrets.CAPROVER_LOKI_APP_TOKEN }}'
-          image: docker.mattglei.ch/lab/loki
+          app: ${{ matrix.image }}
+          token: '${{ secrets.CAPROVER_PASSWORD }}'
+          image: docker.mattglei.ch/lab/${{ matrix.image }}
