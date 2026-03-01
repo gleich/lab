@@ -14,7 +14,11 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        image: [loki, alloy]
+        include:
+          - image: loki
+            token: CAPROVER_LOKI
+          - image: alloy
+            token: CAPROVER_ALLOY
     steps:
       - uses: actions/checkout@v4
       - uses: docker/login-action@v3
@@ -29,5 +33,5 @@ jobs:
         with:
           server: https://lab.mattglei.ch
           app: ${{ matrix.image }}
-          token: '${{ secrets.CAPROVER_PASSWORD }}'
+          token: '${{ secrets[matrix.token] }}'
           image: docker.mattglei.ch/lab/${{ matrix.image }}
