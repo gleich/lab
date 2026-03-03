@@ -37,7 +37,7 @@ loki.process "lab" {
 // This component is responsible for writing the logs to Loki
 loki.write "lab" {
 	endpoint {
-		url  = "http://loki:3100/loki/api/v1/push"
+		url  = "http://srv-captain--loki:3100/loki/api/v1/push"
 	}
 }
 
