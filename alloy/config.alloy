@@ -1,0 +1,41 @@
+discovery.docker "lab" {
+	host = "unix:///var/run/docker.sock"
+	refresh_interval = "5s"
+}
+
+discovery.relabel "lab" {
+	targets = []
+
+	rule {
+		source_labels = ["__meta_docker_container_name"]
+		regex         = "/(.*)"
+		target_label  = "container"
+	}
+}
+
+loki.source.docker "lab" {
+	host             = "unix:///var/run/docker.sock"
+	targets          = discovery.docker.lab.targets
+	forward_to       = [loki.process.lab.receiver]
+	relabel_rules    = discovery.relabel.lab.rules
+	refresh_interval = "5s"
+}
+
+loki.process "lab" {
+    stage.static_labels {
+    values = {
+      env = "production",
+    }
+}
+    forward_to = [loki.write.lab.receiver]
+}
+
+loki.write "lab" {
+	endpoint {
+		url  = "http://srv-captain--loki:3100/loki/api/v1/push"
+	}
+}
+
+livedebugging {
+  enabled = true
+}
