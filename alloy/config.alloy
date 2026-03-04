@@ -22,11 +22,11 @@ loki.source.docker "lab" {
 }
 
 loki.process "lab" {
-    stage.static_labels {
-    values = {
-      env = "production",
-    }
-}
+	stage.static_labels {
+		values = {
+			env = "production",
+		}
+	}
     forward_to = [loki.write.lab.receiver]
 }
 
