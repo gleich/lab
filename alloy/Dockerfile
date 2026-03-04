@@ -1,4 +1,4 @@
-FROM grafana/alloy:1.13.2
+FROM grafana/alloy:v1.13.2
 
 WORKDIR /src
 
