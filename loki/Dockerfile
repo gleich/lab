@@ -1,7 +1,6 @@
-FROM grafana/loki:3.4
+FROM grafana/loki:3.4.0
 
-WORKDIR /src
+COPY loki.yml /etc/loki/config.yaml
 
-COPY loki.yml config.yaml
-
-CMD ["loki"]
+ENTRYPOINT ["/usr/bin/loki"]
+CMD ["-config.file=/etc/loki/config.yaml"]
