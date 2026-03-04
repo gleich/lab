@@ -8,9 +8,6 @@ on:
 jobs:
   caprover:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./loki/
     strategy:
       fail-fast: true
       matrix:
@@ -19,6 +16,9 @@ jobs:
             token: CAPROVER_LOKI
           - image: alloy
             token: CAPROVER_ALLOY
+    defaults:
+      run:
+        working-directory: ./${{matrix.image}}/
     name: ${{matrix.image}}
     steps:
       - uses: actions/checkout@v4
