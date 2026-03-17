@@ -16,6 +16,8 @@ jobs:
             token: CAPROVER_LOKI
           - image: alloy
             token: CAPROVER_ALLOY
+          - image: grafana
+            token: CAPROVER_GRAFANA
     defaults:
       run:
         working-directory: ./${{matrix.image}}/
