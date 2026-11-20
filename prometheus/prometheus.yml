@@ -7,6 +7,14 @@ scrape_configs:
     static_configs:
       - targets: ['172.17.0.1:9001']
 
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['172.17.0.1:9002']
+    metric_relabel_configs:
+      - source_labels: [container_label_com_docker_swarm_service_name]
+        regex: 'srv-captain--(.+)'
+        target_label: app
+
   - job_name: 'gleichtv'
     static_configs:
       - targets: ['100.125.210.49:9100']
