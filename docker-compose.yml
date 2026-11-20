@@ -1,0 +1,45 @@
+# Metrics exporters that run directly on the host, outside of CapRover, and are scraped by Prometheus at 172.17.0.1.
+# node-exporter (:9001) exposes host cpu, memory, disk, and network metrics.
+# cadvisor (:9002) exposes per container cpu, memory, network, and disk io metrics.
+
+services:
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    network_mode: host
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--web.listen-address=:9001'
+
+  cadvisor:
+    image: ghcr.io/google/cadvisor:v0.61.1
+    container_name: cadvisor
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    cgroup: host
+    devices:
+      - /dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    command:
+      - '--listen_ip=172.17.0.1'
+      - '--port=9002'
+      - '--docker_only=true'
+      - '--housekeeping_interval=15s'
+      - '--store_container_labels=false'
+      - '--whitelisted_container_labels=com.docker.swarm.service.name'
+      - '--enable_metrics=cpu,memory,network,diskIO'
