@@ -6,7 +6,29 @@ on:
       - main
 
 jobs:
-  caprover:
+  push:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        image: [loki, alloy, grafana, prometheus]
+    defaults:
+      run:
+        working-directory: ./${{ matrix.image }}/
+    name: push ${{ matrix.image }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: docker.mattglei.ch
+          username: admin
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker build -t docker.mattglei.ch/lab/${{ matrix.image }} .
+          docker push docker.mattglei.ch/lab/${{ matrix.image }}
+
+  deploy:
+    needs: push
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -20,20 +42,8 @@ jobs:
             token: CAPROVER_GRAFANA
           - image: prometheus
             token: CAPROVER_PROMETHEUS
-    defaults:
-      run:
-        working-directory: ./${{matrix.image}}/
-    name: ${{matrix.image}}
+    name: deploy ${{ matrix.image }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: docker/login-action@v3
-        with:
-          registry: docker.mattglei.ch
-          username: admin
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-      - run: |
-          docker build -t docker.mattglei.ch/lab/${{ matrix.image }} .
-          docker push docker.mattglei.ch/lab/${{ matrix.image }}
       - uses: caprover/deploy-from-github@v1.1.2
         with:
           server: https://lab.mattglei.ch
