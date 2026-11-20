@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "grafana": {
+      "command": "uvx",
+      "args": ["--env-file", ".env", "mcp-grafana"],
+      "env": {
+        "GRAFANA_URL": "https://grafana.lab.mattglei.ch"
+      }
+    }
+  }
+}
