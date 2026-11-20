@@ -18,6 +18,8 @@ jobs:
             token: CAPROVER_ALLOY
           - image: grafana
             token: CAPROVER_GRAFANA
+          - image: prometheus
+            token: CAPROVER_PROMETHEUS
     defaults:
       run:
         working-directory: ./${{matrix.image}}/

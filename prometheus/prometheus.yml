@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['172.17.0.1:9001']
+
+  - job_name: 'gleichtv'
+    static_configs:
+      - targets: ['100.125.210.49:9100']
+    basic_auth:
+      username: prometheus
+      password_file: /etc/prometheus/secrets/gleichtv
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          app: 'prometheus'
