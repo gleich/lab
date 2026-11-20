@@ -43,3 +43,5 @@ services:
       - '--store_container_labels=false'
       - '--whitelisted_container_labels=com.docker.swarm.service.name'
       - '--enable_metrics=cpu,memory,network,diskIO'
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://172.17.0.1:9002/healthz']
